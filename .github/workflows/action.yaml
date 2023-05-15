@@ -1,10 +1,10 @@
 #  REPO_URLS=$(grep -o '(?<=https://github.com/)[^ )]+' README.md)
 # echo "URLS=$(cat README.md | grep -Po '(?<=https://github.com/)[^ )]+')" >> "$GITHUB_ENV"
-name: Find Repo Stars and Update README
-on:
-  push:
-    branches:
-      - main
+#name: Find Repo Stars and Update README
+#on:
+#  push:
+#    branches:
+#      - main
 
 jobs:
   find-repo-stars:
