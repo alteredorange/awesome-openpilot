@@ -16,7 +16,7 @@ jobs:
       - name: Find repo URLs and stars
         id: repo-stars
         run: |
-          echo "URLS=$(grep -Po '(?<=https://github.com/)[^ )]+' README.md)" >> "$GITHUB_ENV"
+          echo "URLS=$(grep -Po '(?<=https://github.com/)[^ )]+' README.md)<<EOF" >> "$GITHUB_ENV"
           echo "${{ env.URLS }}" # This will output 'yellow'
           IFS=$'\n'
           for URL in $REPO_URLS; do
