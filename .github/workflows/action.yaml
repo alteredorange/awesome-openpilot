@@ -26,6 +26,6 @@ jobs:
           for URL in $env.URLS; do
             API_URL="https://api.github.com/repos/${URL}?page=$i&per_page=100"
             STAR_COUNT=$(curl -s "$API_URL" | jq '.stargazers_count')
-            sed -i "s/stars/$STAR_COUNT stars|" README.md
+            sed -i "s/stars/$STAR_COUNT stars|/" README.md
             #sed -i 's/<reponame>/'${{ github.event.repository.name }}'/' README.md
           done
