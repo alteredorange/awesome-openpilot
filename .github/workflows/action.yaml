@@ -15,8 +15,8 @@ jobs:
       - name: Find repo URLs and stars
         id: repo-stars
         run: |
-          echo ::set-env name=URLS::$(cat README.md | grep -Po '(?<=https://github.com/)[^ )]+')
-          echo $URLS
+          echo "URLS=$(cat README.md | grep -Po '(?<=https://github.com/)[^ )]+')" >> "$GITHUB_ENV"
+          echo "${{ env.URLS }}" # This will output 'yellow'
           IFS=$'\n'
           for URL in $REPO_URLS; do
             API_URL="https://api.github.com/repos/${URL}?page=$i&per_page=100"
