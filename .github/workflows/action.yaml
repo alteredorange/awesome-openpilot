@@ -14,10 +14,10 @@ jobs:
       - name: Find repo URLs and stars
         id: repo-stars
         run: |
-          REPO_URLS=$(grep -Eo 'https://github.com/[^ ]+' README.md)
+          REPO_URLS=$(grep -Eo '(?<=https://github.com/)[^ )]+' README.md)
           IFS=$'\n'
           for URL in $REPO_URLS; do
-            API_URL="${URL/github.com/api.github.com\/repos}"
+            API_URL="https://api.github.com/repos/${URL}?page=$i&per_page=100"
             STAR_COUNT=$(curl -s "$API_URL" | jq '.stargazers_count')
             sed -i "s|$URL|[$URL]($URL) $STAR_COUNT stars|" README.md
           done
