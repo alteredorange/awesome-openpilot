@@ -1,0 +1,25 @@
+name: Find Repo Stars and Update README
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  find-repo-stars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Find repo URLs and stars
+        id: repo-stars
+        run: |
+          REPO_URLS=$(grep -Eo 'https://github.com/[^ ]+' README.md)
+          IFS=$'\n'
+          for URL in $REPO_URLS; do
+            API_URL="${URL/github.com/api.github.com\/repos}"
+            STAR_COUNT=$(curl -s "$API_URL" | jq '.stargazers_count')
+            sed -i "s|$URL|[$URL]($URL) $STAR_COUNT stars|" README.md
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
