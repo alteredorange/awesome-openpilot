@@ -15,7 +15,7 @@ jobs:
         id: repo-stars
         run: |
           REPO_URLS=$(grep -o '(?<=https://github.com/)[^ )]+' README.md)
-          echo "$REPO_URLS"
+          echo "URLS=$(cat projectFile | grep -Po '(?<=https://github.com/)[^ )]+')" >> $GITHUB_OUTPUT
           IFS=$'\n'
           for URL in $REPO_URLS; do
             API_URL="https://api.github.com/repos/${URL}?page=$i&per_page=100"
