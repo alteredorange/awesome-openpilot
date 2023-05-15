@@ -21,6 +21,7 @@ jobs:
           echo "grep -Po '(?<=https://github.com/)[^ )]+' README.md)" >> "$GITHUB_ENV"
           echo "$EOF" >> "$GITHUB_ENV"
           echo "${{ env.URLS }}" # This will output 'yellow'
+          echo "$env.URLS" > test.md
           IFS=$'\n'
           for URL in $REPO_URLS; do
             API_URL="https://api.github.com/repos/${URL}?page=$i&per_page=100"
