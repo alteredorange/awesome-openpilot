@@ -23,7 +23,7 @@ jobs:
           echo "${{ env.URLS }}" # This will output 'yellow'
           echo "$env.URLS" > test.md
           IFS=$'\n'
-          for URL in $REPO_URLS; do
+          for URL in $env.URLS; do
             API_URL="https://api.github.com/repos/${URL}?page=$i&per_page=100"
             STAR_COUNT=$(curl -s "$API_URL" | jq '.stargazers_count')
             sed -i "s|$URL|[$URL]($URL) $STAR_COUNT stars|" README.md
