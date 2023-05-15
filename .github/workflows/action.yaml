@@ -1,34 +1,23 @@
-
-Sure, here is a GitHub Action that finds the star count for each repo and adds that star count to the beginning of the line:
-
-name: Find repo stars and add to line
-
+name: Find Repo Stars and Update README
 on:
-push:
-branches:
-- main
+  push:
+    branches:
+      - main
 
 jobs:
-find-repo-stars:
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v2
-- name: Find repo stars
-run: |
-find . -name README.md | xargs grep -oP "(?<=https://github.com/[^/]+)/[^/]+"
+  find-repo-stars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-add-star-count:
-runs-on: ubuntu-latest
-needs: find-repo-urls
-steps:
-- uses: actions/checkout@v2
-- name: Add star count
-run: |
-for repo_url in (catfind−repo−urls/output.txt);dostar 
-c
-​
- ount=(curl -s "$repo_url" | grep "starCount" | sed -E "s/.'starCount': ([0-9]+)./\1/")
-echo "Repo URL: $repo_url, Star count: $star_count"
-# Add the star count to the beginning of the line in the README file.
-sed -i "s/^/$star_count $repo_url/" README.md
-done
+      - name: Find repo URLs and stars
+        id: repo-stars
+        run: |
+          REPO_URLS=$(grep -Eo 'https://github.com/[^ ]+' README.md)
+          IFS=$'\n'
+          for URL in $REPO_URLS; do
+            API_URL="${URL/github.com/api.github.com\/repos}"
+            STAR_COUNT=$(curl -s "$API_URL" | jq '.stargazers_count')
+            sed -i "s|$URL|[$URL]($URL) $STAR_COUNT stars|" README.md
+          done
