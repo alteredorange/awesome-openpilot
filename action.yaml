@@ -2,10 +2,29 @@ name: 'Star Count'
 description: 'Get count of repository stars'
 author: 'alteredorange'
 inputs:
+  username:
+        description: 'A username passed from the caller workflow'
+        default: 'john-doe'
+        required: false
+        type: string
+        
+inputs:
+  repo-urls:
+    description: 'Repository URLs (separated by a new line)'
+    default: 'https://github.com/sunnyhaibin/sunnypilot
+    https://github.com/dragonpilot-community/dragonpilot`
+    required: true
+        
+inputs:
   repoPath:
     description: 'Repository Path'
     required: false
     default: ${{github.repository}}
+    
+    
+    INPUT_<VARIABLE_NAME>
+    
+    
 outputs:
   stars:
     description: "Repo Stars"
@@ -21,3 +40,58 @@ runs:
 branding:
   icon: 'award'
   color: 'green'
+
+
+jobs:
+  find-repo-urls:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Find repo URLs
+        run: |
+          REPO_URLS=$(grep -Eo 'https://github.com/[^ ]+' README.md)
+          echo "::set-output name=urls::$REPO_URLS"
+
+  get-star-count:
+    needs: find-repo-urls
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrieve star count
+        id: stars
+        run: |
+          URLS="${{ needs.find-repo-urls.outputs.urls }}"
+          IFS=$'\n'
+          for URL in $URLS; do
+            API_URL="${URL/github.com/api.github.com\/repos}"
+            STAR_COUNT=$(curl -s "$API_URL" | jq '.stargazers_count')
+            echo "::set-output name=stars::$STAR_COUNT"
+          done
+          
+          
+          
+jobs:
+find-repo-urls:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v2
+- name: Find repo URLs
+run: |
+find . -name README.md | xargs grep -oP "(?<=https://github.com/[^/]+)/[^/]+"
+
+get-star-count:
+runs-on: ubuntu-latest
+needs: find-repo-urls
+steps:
+- uses: actions/checkout@v2
+- name: Get star count
+run: |
+for repo_url in (catfind−repo−urls/output.txt);dostar 
+c
+​
+ ount=(curl -s "$repo_url" | grep "starCount" | sed -E "s/.'starCount': ([0-9]+)./\1/")
+echo "Repo URL: $repo_url, Star count: $star_count"
+# Replace the repo URL with the star count in the README file.
+sed -i "s/$repo_url/$star_count/g" README.md
+done
