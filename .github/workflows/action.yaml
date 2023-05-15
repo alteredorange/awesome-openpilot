@@ -1,3 +1,4 @@
+#  REPO_URLS=$(grep -o '(?<=https://github.com/)[^ )]+' README.md)
 name: Find Repo Stars and Update README
 on:
   push:
@@ -14,7 +15,6 @@ jobs:
       - name: Find repo URLs and stars
         id: repo-stars
         run: |
-          REPO_URLS=$(grep -o '(?<=https://github.com/)[^ )]+' README.md)
           echo "URLS=$(cat projectFile | grep -Po '(?<=https://github.com/)[^ )]+')" >> $GITHUB_OUTPUT
           IFS=$'\n'
           for URL in $REPO_URLS; do
